@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 
 class Program
 {
@@ -6,6 +7,26 @@ class Program
     {
         Menu myMenu = new Menu();
 
-        int responce = myMenu.ProcessMenu();
+        int responce = 0;
+
+        while(responce != 5)
+        {
+            responce = myMenu.ProcessMenu();
+            switch(responce)
+            {
+                case 1:
+                    Console.WriteLine("Create");
+                    break;
+                case 2:
+                    Console.WriteLine("Display");
+                    break;
+                case 3:
+                    Console.WriteLine("Save");
+                    break;
+                case 4:
+                    Console.WriteLine("Write");
+                    break;
+            }
+        }
     }
 }
