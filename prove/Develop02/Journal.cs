@@ -1,50 +1,71 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+
 class Journal
 {
-    public void WriteToFile(string filename)
+    public List<JournalEntry> _entries = new List<JournalEntry>();
 
+    public void AddEntry(JournalEntry newEntry)
     {
+        _entries.Add(newEntry);
+    }
 
-        using (StreamWriter outputFile = new StreamWriter(filename))
-
-        {          
-
-            foreach(JournalEntry entry in entries)
-
-            {
-
-                outputFile.WriteLine(entry.ToString());
-
-            }
-
+    public void DisplayAll()
+    {
+        if (_entries.Count == 0)
+        {
+            Console.WriteLine("\nNo entries in the journal.\n");
+            return;
         }
 
+        Console.WriteLine("\n=== Journal Entries ===");
+        foreach (JournalEntry entry in _entries)
+        {
+            entry.DisplayEntry();
+        }
     }
-     public void ReadFromFile(string filename)
 
+    public void WriteToFile(string filename)
     {
+        using (StreamWriter outputFile = new StreamWriter(filename))
+        {          
+            foreach (JournalEntry entry in _entries)
+            {
+                outputFile.WriteLine(entry.ToString());
+            }
+        }
+        Console.WriteLine($"\nJournal successfully saved to {filename}.\n");
+    }
 
-        string[] lines = System.IO.File.ReadAllLines(filename);
+    public void ReadFromFile(string filename)
+    {
+        if (!File.Exists(filename))
+        {
+            Console.WriteLine($"\nFile '{filename}' not found.\n");
+            return;
+        }
 
+        // Clear existing entries per requirement #4
+        _entries.Clear();
+
+        string[] lines = File.ReadAllLines(filename);
 
         foreach (string line in lines)
-
         {
-
             string[] parts = line.Split("#");
 
+            if (parts.Length >= 3)
+            {
+                string date = parts[0];
+                string prompt = parts[1];
+                string response = parts[2];
+                string mood = parts.Length > 3 ? parts[3] : "N/A";
 
-            string date = parts[0];
-
-            string question = parts[1];
-
-            string entryText = parts[2];
-
-
-            JournalEntry entry = new JournalEntry(date, question, entryText);  
-
-            this.AddEntry(entry);
-
+                JournalEntry entry = new JournalEntry(date, prompt, response, mood);  
+                _entries.Add(entry);
+            }
         }
-
+        Console.WriteLine($"\nJournal successfully loaded from {filename}.\n");
     }
 }

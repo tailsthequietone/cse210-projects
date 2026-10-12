@@ -1,35 +1,35 @@
+using System;
+
 class JournalEntry
 {
     public string _date;
     public string _prompt;
     public string _response;
+    public string _mood; // Extra feature: Mood tracking
+
+    public JournalEntry()
+    {
+    }
+
+    public JournalEntry(string date, string prompt, string response, string mood)
+    {
+        _date = date;
+        _prompt = prompt;
+        _response = response;
+        _mood = mood;
+    }
 
     public void DisplayEntry()
     {
-        Console.Write($"{_date}, ");
-        Console.WriteLine($"{_prompt}, ");
-        Console.WriteLine($"{_response}, ");
+        Console.WriteLine($"Date: {_date} - Mood: {_mood}/5");
+        Console.WriteLine($"Prompt: {_prompt}");
+        Console.WriteLine($"Response: {_response}");
+        Console.WriteLine("----------------------------------------");
     }
 
-    public void CreateJournalEntry()
+    public override string ToString()
     {
-        _date = "October 7, 2026";
-        _prompt = "How was your day? ";
-
-        Console.Write($"{_prompt}");
-        _response = Console.ReadLine();
-    }
-     public override string ToString()
-
-    {
-
-        string outputString = "";
-
-
-        outputString = $"{_date}#{_entryQuestion}#{_journalEntry}";
-
-
-        return outputString;
-
+        // Save using '#' as separator
+        return $"{_date}#{_prompt}#{_response}#{_mood}";
     }
 }
