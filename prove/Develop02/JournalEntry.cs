@@ -5,7 +5,7 @@ class JournalEntry
     public string _date;
     public string _prompt;
     public string _response;
-    public string _mood; // Extra feature: Mood tracking
+    public string _mood;
 
     public JournalEntry()
     {

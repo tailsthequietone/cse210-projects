@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 
 class Journal
@@ -46,7 +45,6 @@ class Journal
             return;
         }
 
-        // Clear existing entries per requirement #4
         _entries.Clear();
 
         string[] lines = File.ReadAllLines(filename);

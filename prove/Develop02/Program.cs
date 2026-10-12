@@ -1,10 +1,4 @@
-// EXCEEDING REQUIREMENTS SHOWCASE:
-// I added a simple Mood Tracker (1-5 scale) to each journal entry.
-// When creating a new entry, the user is prompted to rate their overall mood for the day.
-// This data is saved along with the date, prompt, and response, and loaded back when reading files.
-
 using System;
-using System.Collections.Generic;
 
 class Program
 {
@@ -33,7 +27,6 @@ class Program
             switch (response)
             {
                 case 1:
-                    // Get random prompt
                     int promptIndex = randomGenerator.Next(prompts.Count);
                     string selectedPrompt = prompts[promptIndex];
 
@@ -41,7 +34,6 @@ class Program
                     Console.Write("> ");
                     string userResponse = Console.ReadLine();
 
-                    // Simple mood rating feature (Exceeds requirements)
                     Console.Write("Rate your mood today (1-5): ");
                     string moodRating = Console.ReadLine();
 
