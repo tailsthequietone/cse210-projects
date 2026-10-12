@@ -4,12 +4,12 @@
     {
         Console.WriteLine("Hello Circle");
 
-        Circle myCircle = new Circle();
-        myCircle._radius = 10;
+        Circle myCircle = new Circle(100);
 
         double area =myCircle.GetArea();
 
         Console.WriteLine(area);
 
     }
+
 }
