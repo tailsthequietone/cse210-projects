@@ -8,6 +8,7 @@ class Program
         Menu myMenu = new Menu();
 
         int responce = 0;
+        JournalEntry newEntry = new JournalEntry();
 
         while(responce != 5)
         {
@@ -16,6 +17,7 @@ class Program
             {
                 case 1:
                     Console.WriteLine("Create");
+                    newEntry.CreateJournalEntry();
                     break;
                 case 2:
                     Console.WriteLine("Display");
