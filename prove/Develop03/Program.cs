@@ -7,7 +7,7 @@ class Program
     // allowing users to practice the scripture again without restarting the application.
     static void Main(string[] args)
     {
-        Scripture scripture = new Scripture("Proverbs", 3, 5, 6, "Trust in the Lord with all thine heart and lean not unto thine own understanding");
+        Scripture scripture = new Scripture("Proverbs", 3, 5, 6, "Trust in the LORD with all thine heart; and lean not unto thine own understanding. In all thy ways acknowledge him, and he shall direct thy paths.");
 
         bool keepPlaying = true;
         while (keepPlaying)
