@@ -1,27 +1,96 @@
-using System.Runtime.CompilerServices;
+using System;
+using System.Collections.Generic;
 
 class Scripture
 {
-    List<Word> _words;
-    // Add scripture reference
+    private List<Word> _words;
+    private ScriptureReference _reference;
+    private string _text;
 
-    public Scripture(string bookName, int chapter, int verse, string text)
+    public Scripture(string name, int chapter, int verse, string text)
     {
+        _reference = new ScriptureReference(name, chapter, verse);
+        _text = text;
         _words = ConvertToWords(text);
     }
-    public Scripture(string bookName, int chapter, int startVerse, int endVerse, string text)
+
+    public Scripture(string name, int chapter, int startVerse, int endVerse, string text)
     {
-        
+        _reference = new ScriptureReference(name, chapter, startVerse, endVerse);
+        _text = text;
+        _words = ConvertToWords(text);
     }  
+
+    public Scripture(ScriptureReference reference, string text)
+    {
+        _reference = reference;
+        _text = text;
+        _words = ConvertToWords(text);
+    }
+
+    public bool HideSomeWords()
+    {
+        Random random = new Random();
+        List<Word> visibleWords = new List<Word>();
+
+        foreach (Word word in _words)
+        {
+            if (!word.IsHidden())
+            {
+                visibleWords.Add(word);
+            }
+        }
+
+        if (visibleWords.Count == 0)
+        {
+            return false;
+        }
+
+        int countToHide = Math.Min(3, visibleWords.Count);
+        for (int i = 0; i < countToHide; i++)
+        {
+            int index = random.Next(visibleWords.Count);
+            visibleWords[index].Hide();
+            visibleWords.RemoveAt(index);
+        }
+
+        return true;
+    }
+
     public void ShowScripture()
     {
+        _reference.DisplayScriptureReference();
+        Console.WriteLine();
         foreach(Word word in _words)
         {
-            word.Display();
+            word.DisplayWord();
         }
+        Console.WriteLine();
     }
-    //ConvertToWords will convert the paragraph that is in the text parameter to a list of words. 
-    // This list of words is returned
+
+    public string GetScriptureReference()
+    {
+        return _reference.GetScriptureReference();
+    }
+
+    private int NumberOfHiddenWords()
+    {
+        int count = 0;
+        foreach (Word word in _words)
+        {
+            if (word.IsHidden())
+            {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public void Reset()
+    {
+        _words = ConvertToWords(_text);
+    }
+
     private List<Word> ConvertToWords(string text)
     {
         List<Word> tempWords = new List<Word>();
@@ -32,5 +101,4 @@ class Scripture
         }
         return tempWords;
     }
-
 }
