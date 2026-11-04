@@ -20,15 +20,16 @@ class BaseActivity
 
     public void DisplaySpinnerMessage(string message, int seconds)
     {
+        DateTime endTime = DateTime.Now.AddSeconds(seconds);
         Console.CursorVisible = false;
         Console.Clear();
         Console.Write($"{message} ");
-        for (int i=0; i < seconds; i++)
+        while (DateTime.Now < endTime)
         {
-            Console.Write("+");
+            Console.Write("x");
             Thread.Sleep(400);
             Console.Write("\b");
-            Console.Write("x");
+            Console.Write("+");
             Thread.Sleep(400);
             Console.Write("\b");
         }
