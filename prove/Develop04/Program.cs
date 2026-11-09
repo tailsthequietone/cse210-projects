@@ -2,6 +2,22 @@ using System;
 
 public class Program
 {
+    private static void DisplayScripture()
+{
+    string[] scriptures =
+    {
+        "Joshua 1:9 - Be strong and of a good courage: for unto this people shalt thou divide for an inheritance the land, which I sware unto their fathers to give them.",
+        "Philippians 4:13 - I can do all things through Christ which strengtheneth me.",
+        "Proverbs 3:5 - Trust in the Lord with all thine heart; and lean not unto thine own understanding."
+    };
+
+    Random random = new Random();
+
+    Console.WriteLine("\nBefore you go, here is a scripture:");
+    Console.WriteLine(scriptures[random.Next(scriptures.Length)]);
+    Console.WriteLine("\nPress Enter to exit.");
+    Console.ReadLine();
+}
     public static void Main(string[] args)
     {
         // The program follows the same terminal flow as the demonstration:
@@ -34,6 +50,7 @@ public class Program
             }
             else if (choice == "4")
             {
+                DisplayScripture();
                 running = false;
             }
             else
