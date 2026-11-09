@@ -13,7 +13,7 @@ class Person
         _weight = weight;
     }
 
-    public void DisplayPersonInformation()
+    public virtual void GetPersonInformation()
     {
         Console.WriteLine($"{_firstName} {_lastName} is {_age} years old and weighs {_weight}lbs");
     }

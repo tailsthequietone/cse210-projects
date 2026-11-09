@@ -1,20 +1,47 @@
 using System;
 
-class Program
+public class Program
 {
-    static void Main(string[] args)
+    public static void Main(string[] args)
     {
-        BaseActivity activity = new BaseActivity();
-        activity.RunCountDownMessage("Get Ready", 5);
+        // The program follows the same terminal flow as the demonstration:
+        // each activity returns to the menu after its completion message.
+        bool running = true;
 
-        DateTime endTime = DateTime.Now.AddSeconds(15);
-
-        while (DateTime.Now < endTime)
+        while (running)
         {
-            activity.RunCountDownMessage("breath in...", 4);
-            activity.RunCountDownMessage("breath out...", 6);
-        }
+            Console.Clear();
+            Console.WriteLine("Menu Options:");
+            Console.WriteLine("  1. Start breathing activity");
+            Console.WriteLine("  2. Start reflecting activity");
+            Console.WriteLine("  3. Start listing activity");
+            Console.WriteLine("  4. Quit");
+            Console.Write("Select a choice from the menu: ");
 
-        activity.DisplaySpinnerMessage("Well Done", 5);
+            string choice = Console.ReadLine() ?? string.Empty;
+
+            if (choice == "1")
+            {
+                new BreathingActivity().Run();
+            }
+            else if (choice == "2")
+            {
+                new ReflectionActivity().Run();
+            }
+            else if (choice == "3")
+            {
+                new ListingActivity().Run();
+            }
+            else if (choice == "4")
+            {
+                running = false;
+            }
+            else
+            {
+                Console.WriteLine("\nThat is not a valid option.");
+                Console.WriteLine("Press Enter to try again.");
+                Console.ReadLine();
+            }
+        }
     }
 }

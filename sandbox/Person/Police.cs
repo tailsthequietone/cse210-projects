@@ -7,4 +7,9 @@ class Police : Person
     {
         _weapons = weapons;
     }
+
+    public override void GetPersonInformation()
+    {
+    Console.WriteLine($"weapons: {_weapons} {base.GetPersonInformation}");
+    }
 }
