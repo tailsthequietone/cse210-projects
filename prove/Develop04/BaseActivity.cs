@@ -1,9 +1,5 @@
-
 using System;
-
-// Shared base class for every mindfulness activity.
-// The original starter countdown and spinner methods are retained here and
-// expanded with the common start/end workflow required by the assignment.
+//don't forget is base class
 public class Activity
 {
     private string _name;
