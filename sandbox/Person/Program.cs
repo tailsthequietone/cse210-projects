@@ -1,27 +1,49 @@
-﻿using System.Dynamic;
-
-class Program
+﻿class Program
 {
-    static void GetPersonInformation(Person person)
+
+    static void DisplayPersonInformation(Person person)
     {
-        Console.WriteLine($"{person.GetPersonInformation}");
+        // if (person is Doctor d)
+        //     Console.WriteLine(d.GetDoctorInformation());
+        // else if (person is Police p)
+        //     Console.WriteLine(p.GetPoliceInformation());
+        // else
+
+        Console.Write($"Salary: ${person.GetSalary()} ");
+        Console.WriteLine(person.GetPersonInformation());
+
     }
     static void Main()
     {
-        Person myPerson = new Person("Bob", "Floyd", 64, 195);
-        myPerson.GetPersonInformation();
-        Police myPolice = new Police("Lance", "Bob", 34, 250, "P90");
-        myPolice.GetPersonInformation();
+        // Person myPerson = new Person("Bob", "Floyd", 56, 238);
+
+        // Console.WriteLine(myPerson.GetPersonInformation());
+
+        Police myPolice = new Police("Lance", "Bob", 34, 186, "Taser");
+
+        // myPolice.DisplayPersonInformation();
+        // Console.WriteLine(myPolice.GetPoliceInformation());
+
+        Doctor myDoctor = new Doctor("Billy", "Payne", 20, 150, "Knife");
+        // Console.WriteLine(myDoctor.GetDoctorInformation());
 
         List<Person> myPeople = new List<Person>();
 
-        myPeople.Add(myPerson);
+        // myPeople.Add(myPerson);
+        myPeople.Add(myDoctor);
         myPeople.Add(myPolice);
-
 
         foreach(Person person in myPeople)
         {
-            GetPersonInformation(person);
+
+            DisplayPersonInformation(person);
+            // Console.WriteLine(person.GetPersonInformation());
+            // if(person is Doctor d)
+            // {
+            //     Console.WriteLine(d.GetDoctorInformation());
+            // }
         }
+
+
     }
 }
