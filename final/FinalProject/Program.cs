@@ -9,7 +9,6 @@ class Program
         DirectoryScanner scanner = new DirectoryScanner();
         DuplicateDetector detector = new DuplicateDetector();
         DeletionManager deletionManager = new DeletionManager();
-        EmptyFolderCleaner folderCleaner = new EmptyFolderCleaner();
         UserInterface ui = new UserInterface();
 
         List<DuplicateGroup> currentDuplicates = new List<DuplicateGroup>();
@@ -29,10 +28,7 @@ class Program
                     {
                         List<FileItem> scannedFiles = scanner.ScanDirectory(folderPath);
                         currentDuplicates = detector.FindDuplicates(scannedFiles);
-                        folderCleaner.SetRootScanPath(folderPath);
-                        int emptyFolderCount = folderCleaner.FindEmptySubfolders().Count;
-
-                        ui.DisplayScanSummary(scannedFiles.Count, currentDuplicates.Count, emptyFolderCount);
+                        ui.DisplayScanSummary(scannedFiles.Count, currentDuplicates.Count);
                     }
                     catch (DirectoryNotFoundException ex)
                     {
@@ -49,25 +45,21 @@ class Program
                     break;
 
                 case 3:
-                    ui.RunDeletionWorkflow(currentDuplicates, deletionManager, folderCleaner);
+                    ui.RunDeletionWorkflow(currentDuplicates, deletionManager);
                     break;
 
                 case 4:
-                    ui.RunEmptyFolderCleanup(folderCleaner);
+                    ui.DisplayDeletionStats(deletionManager);
                     break;
 
                 case 5:
-                    ui.DisplayDeletionStats(deletionManager, folderCleaner);
-                    break;
-
-                case 6:
-                    ui.DisplayDeletionStats(deletionManager, folderCleaner);
+                    ui.DisplayDeletionStats(deletionManager);
                     ui.DisplayMessage("Goodbye!");
                     running = false;
                     break;
 
                 default:
-                    ui.DisplayMessage("Invalid option. Please enter a number between 1 and 6.");
+                    ui.DisplayMessage("Invalid option. Please enter a number between 1 and 5.");
                     break;
             }
         }
