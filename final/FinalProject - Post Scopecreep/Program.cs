@@ -10,9 +10,12 @@ class Program
         DuplicateDetector detector = new DuplicateDetector();
         DeletionManager deletionManager = new DeletionManager();
         EmptyFolderCleaner folderCleaner = new EmptyFolderCleaner();
+        AlbumOrganizer albumOrganizer = new AlbumOrganizer();
         UserInterface ui = new UserInterface();
 
+        List<FileItem> scannedFiles = new List<FileItem>();
         List<DuplicateGroup> currentDuplicates = new List<DuplicateGroup>();
+        string currentScanRoot = "";
         bool running = true;
 
         ui.DisplayWelcome();
@@ -27,8 +30,9 @@ class Program
                     string folderPath = ui.PromptForFolderPath();
                     try
                     {
-                        List<FileItem> scannedFiles = scanner.ScanDirectory(folderPath);
+                        scannedFiles = scanner.ScanDirectory(folderPath);
                         currentDuplicates = detector.FindDuplicates(scannedFiles);
+                        currentScanRoot = folderPath;
                         folderCleaner.SetRootScanPath(folderPath);
                         int emptyFolderCount = folderCleaner.FindEmptySubfolders().Count;
 
@@ -53,21 +57,25 @@ class Program
                     break;
 
                 case 4:
-                    ui.RunEmptyFolderCleanup(folderCleaner);
+                    ui.RunAlbumOrganization(scannedFiles, currentScanRoot, albumOrganizer);
                     break;
 
                 case 5:
-                    ui.DisplayDeletionStats(deletionManager, folderCleaner);
+                    ui.RunEmptyFolderCleanup(folderCleaner);
                     break;
 
                 case 6:
-                    ui.DisplayDeletionStats(deletionManager, folderCleaner);
+                    ui.DisplaySessionStats(deletionManager, folderCleaner, albumOrganizer);
+                    break;
+
+                case 7:
+                    ui.DisplaySessionStats(deletionManager, folderCleaner, albumOrganizer);
                     ui.DisplayMessage("Goodbye!");
                     running = false;
                     break;
 
                 default:
-                    ui.DisplayMessage("Invalid option. Please enter a number between 1 and 6.");
+                    ui.DisplayMessage("Invalid option. Please enter a number between 1 and 7.");
                     break;
             }
         }

@@ -14,13 +14,14 @@ public class UserInterface
     public int DisplayMainMenu()
     {
         Console.WriteLine("\nMain Menu:");
-        Console.WriteLine("  1. Scan a folder for duplicates");
+        Console.WriteLine("  1. Scan a folder for duplicates & music");
         Console.WriteLine("  2. View flagged duplicate groups");
         Console.WriteLine("  3. Review and delete duplicates");
-        Console.WriteLine("  4. Suggest and delete empty sub-folders");
-        Console.WriteLine("  5. View deletion summary");
-        Console.WriteLine("  6. Quit");
-        Console.Write("\nSelect an option (1-6): ");
+        Console.WriteLine("  4. Sort music files into album folders");
+        Console.WriteLine("  5. Suggest and delete empty sub-folders");
+        Console.WriteLine("  6. View session summary");
+        Console.WriteLine("  7. Quit");
+        Console.Write("\nSelect an option (1-7): ");
 
         string input = Console.ReadLine()?.Trim() ?? "";
         return int.TryParse(input, out int choice) ? choice : -1;
@@ -39,7 +40,7 @@ public class UserInterface
         Console.WriteLine($"Found {duplicateGroupCount} duplicate group(s).");
         if (emptySubfolderCount > 0)
         {
-            Console.WriteLine($"Also detected {emptySubfolderCount} empty sub-folder(s) (see Option 4 to clean up).");
+            Console.WriteLine($"Also detected {emptySubfolderCount} empty sub-folder(s) (see Option 5 to clean up).");
         }
     }
 
@@ -129,11 +130,87 @@ public class UserInterface
         Console.WriteLine("\nFinished reviewing duplicate groups.");
     }
 
+    public void RunAlbumOrganization(List<FileItem> scannedFiles, string rootFolder, AlbumOrganizer albumOrganizer)
+    {
+        if (string.IsNullOrEmpty(rootFolder) || scannedFiles.Count == 0)
+        {
+            Console.WriteLine("\nPlease scan a folder first (Option 1).");
+            return;
+        }
+
+        Dictionary<string, List<MusicFile>> plan = albumOrganizer.BuildAlbumPlan(
+            scannedFiles,
+            rootFolder,
+            out int untaggedCount,
+            out int alreadySortedCount);
+
+        if (plan.Count == 0)
+        {
+            Console.WriteLine("\nNo music files need to be moved into album folders.");
+            if (alreadySortedCount > 0)
+            {
+                Console.WriteLine($"  - {alreadySortedCount} song(s) are already in their album folder.");
+            }
+            if (untaggedCount > 0)
+            {
+                Console.WriteLine($"  - {untaggedCount} music file(s) were skipped because they have no album metadata.");
+            }
+            return;
+        }
+
+        Console.WriteLine("\n--- Proposed Album Folder Organization ---");
+        int totalToMove = 0;
+
+        foreach (KeyValuePair<string, List<MusicFile>> entry in plan)
+        {
+            string folderName = entry.Key;
+            List<MusicFile> songs = entry.Value;
+            totalToMove += songs.Count;
+
+            string originalAlbum = songs[0].GetAlbum();
+            string renameNote = string.Equals(originalAlbum, folderName, StringComparison.Ordinal)
+                ? ""
+                : $" (sanitized from \"{originalAlbum}\")";
+
+            Console.WriteLine($"\nFolder: {folderName}\\{renameNote} — {songs.Count} song(s)");
+            foreach (MusicFile song in songs)
+            {
+                Console.WriteLine($"  - {song.GetFileName()}");
+            }
+        }
+
+        if (alreadySortedCount > 0)
+        {
+            Console.WriteLine($"\nNote: {alreadySortedCount} song(s) are already in their matching album folder.");
+        }
+        if (untaggedCount > 0)
+        {
+            Console.WriteLine($"Note: {untaggedCount} music file(s) have no album tag and will stay where they are.");
+        }
+
+        Console.Write($"\nMove {totalToMove} song(s) into {plan.Count} album folder(s) inside \"{rootFolder}\"? (y/n): ");
+        string confirm = Console.ReadLine()?.Trim().ToLower() ?? "";
+
+        if (confirm == "y")
+        {
+            List<string> results = albumOrganizer.ExecuteAlbumPlan(plan, rootFolder);
+            Console.WriteLine();
+            foreach (string line in results)
+            {
+                Console.WriteLine($"  {line}");
+            }
+            Console.WriteLine("\nAlbum organization complete! Tip: Run Option 5 if you want to remove any newly emptied sub-folders.");
+        }
+        else
+        {
+            Console.WriteLine("Album organization canceled.");
+        }
+    }
+
     private void PromptIfParentFolderEmpty(string folderPath, EmptyFolderCleaner folderCleaner)
     {
         string currentFolder = folderPath;
 
-        // Loop allows cleaning up nested empty sub-folders (e.g., Artist\Album\) if desired
         while (!string.IsNullOrEmpty(currentFolder) && folderCleaner.IsEmptySubfolder(currentFolder))
         {
             Console.WriteLine($"\nThe sub-folder \"{currentFolder}\" is now empty.");
@@ -146,7 +223,6 @@ public class UserInterface
                 Console.WriteLine(msg);
                 if (!removed) break;
 
-                // Check if deleting this folder left its parent sub-folder empty as well
                 currentFolder = Path.GetDirectoryName(currentFolder);
             }
             else
@@ -180,7 +256,6 @@ public class UserInterface
 
         foreach (string folder in emptyFolders)
         {
-            // Re-verify in case an earlier step already removed it
             if (!folderCleaner.IsEmptySubfolder(folder)) continue;
 
             Console.Write($"\nDelete empty sub-folder \"{folder}\"? (y/n/q to stop): ");
@@ -205,12 +280,17 @@ public class UserInterface
         }
     }
 
-    public void DisplayDeletionStats(DeletionManager deletionManager, EmptyFolderCleaner folderCleaner)
+    public void DisplaySessionStats(
+        DeletionManager deletionManager,
+        EmptyFolderCleaner folderCleaner,
+        AlbumOrganizer albumOrganizer)
     {
-        Console.WriteLine("\n--- Session Deletion Summary ---");
+        Console.WriteLine("\n--- Session Summary ---");
         Console.WriteLine($"Files deleted:         {deletionManager.GetFilesDeletedCount()}");
         Console.WriteLine($"Space freed:           {deletionManager.GetFormattedSpaceFreed()}");
         Console.WriteLine($"Empty folders deleted: {folderCleaner.GetFoldersDeletedCount()}");
+        Console.WriteLine($"Album folders created: {albumOrganizer.GetFoldersCreatedCount()}");
+        Console.WriteLine($"Songs sorted by album: {albumOrganizer.GetSongsMovedCount()}");
     }
 
     public void DisplayMessage(string message)

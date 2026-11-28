@@ -17,6 +17,10 @@ public class MusicFile : FileItem
         LoadMetadata(filePath);
     }
 
+    public string GetAlbum() => _album;
+
+    public bool HasAlbum() => !string.IsNullOrWhiteSpace(_album);
+
     private void LoadMetadata(string filePath)
     {
         try

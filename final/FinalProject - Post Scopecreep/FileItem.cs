@@ -57,4 +57,10 @@ public class FileItem
             File.Delete(_filePath);
         }
     }
+    public void MoveTo(string destinationPath)
+    {
+        File.Move(_filePath, destinationPath);
+        _filePath = Path.GetFullPath(destinationPath);
+        _fileName = Path.GetFileName(_filePath);
+    }
 }
